@@ -1,0 +1,24 @@
+.vscode/
+*.zip
+.local/
+
+arduino_secrets.h
+
+# Build files
+*.elf
+*.hex
+*.bin
+*.eep
+*.map
+
+# Libraries
+libraries/
+
+# Build output
+build/
+
+# Temporary files
+*.tmp
+*.log
+*.bak
+*.swp
