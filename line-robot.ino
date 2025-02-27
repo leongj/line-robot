@@ -154,8 +154,6 @@ void drivingActions() {
   int ir3_left = state->ir3;
   int ir4_farleft = state->ir4;
 
-  LOGGER.println(String("IR: ") + ir4_farleft + " | " + ir3_left + " | " + ir2_right + " | " + ir1_farright);
-  Serial.println(String("IR: ") + ir4_farleft + " | " + ir3_left + " | " + ir2_right + " | " + ir1_farright);
 
   // turning difference will be the difference between right and left
   // int turningDifference = ir2_right - ir3_left;
@@ -164,23 +162,20 @@ void drivingActions() {
   // modify the wheel speed based on the difference
   if (turningDifference > 0) {
     // reduce right wheel speed
-    LOGGER.println("turning right");
-    Serial.println("turning right");
     rightWheel = rightWheel * turnScale;
+    Serial.println(String("-->> ") + "Wheels: L " + leftWheel + " R " + rightWheel +  "  IR: " + ir4_farleft + " | " + ir3_left + " | " + ir2_right + " | " + ir1_farright + "  diff: " + turningDifference);
   } else {
     // reduce left wheel speed
     leftWheel = leftWheel * turnScale;
-    LOGGER.println("turning left");
-    Serial.println("turning left");
+    Serial.println(String("<<-- ") + "Wheels: L " + leftWheel + " R " + rightWheel +  "  IR: " + ir4_farleft + " | " + ir3_left + " | " + ir2_right + " | " + ir1_farright + "  diff: " + turningDifference);
   }
   
-  Serial.println(String("Wheels: L ") + leftWheel + " R " + rightWheel);
   board->setMotorSpeedL(leftWheel);
   board->setMotorSpeedR(rightWheel);
   
 
   // drive for a bit
-  delay(100);
+  delay(300);
   
   
   
