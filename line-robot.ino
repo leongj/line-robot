@@ -136,15 +136,54 @@ void drivingActions() {
     state->setIdle();
     return;
   }
+
+
+  int defaultSpeed = -100;
+  float leftWheelOffset = 0.9;
+
+  float turnScale = 0.96;
+
+  int rightWheel = defaultSpeed;
+  int leftWheel = defaultSpeed * leftWheelOffset;
+
+  // Understand where the line is
+  // black line is bigger number
+  // IR4 is far left and IR1 is far right
+  int ir1_farright = state->ir1;
+  int ir2_right = state->ir2;
+  int ir3_left = state->ir3;
+  int ir4_farleft = state->ir4;
+
+  LOGGER.println(String("IR: ") + ir4_farleft + " | " + ir3_left + " | " + ir2_right + " | " + ir1_farright);
+  Serial.println(String("IR: ") + ir4_farleft + " | " + ir3_left + " | " + ir2_right + " | " + ir1_farright);
+
+  // turning difference will be the difference between right and left
+  // int turningDifference = ir2_right - ir3_left;
+  int turningDifference = (ir1_farright + ir2_right) - (ir3_left + ir4_farleft);
+
+  // modify the wheel speed based on the difference
+  if (turningDifference > 0) {
+    // reduce right wheel speed
+    LOGGER.println("turning right");
+    Serial.println("turning right");
+    rightWheel = rightWheel * turnScale;
+  } else {
+    // reduce left wheel speed
+    leftWheel = leftWheel * turnScale;
+    LOGGER.println("turning left");
+    Serial.println("turning left");
+  }
   
-  // This example will drive forward for 2s, pause for half a second, then drive backward for 2s
-  board->setSpeedOnBothMotors(250);
-  delay(2000);
-  board->setSpeedOnBothMotors(0);
-  delay(500);
-  board->setSpeedOnBothMotors(-250);
-  delay(2000);
-  board->getRobotState()->setIdle();  
+  Serial.println(String("Wheels: L ") + leftWheel + " R " + rightWheel);
+  board->setMotorSpeedL(leftWheel);
+  board->setMotorSpeedR(rightWheel);
+  
+
+  // drive for a bit
+  delay(100);
+  
+  
+  
 }
 
 
