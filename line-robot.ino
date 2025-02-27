@@ -137,29 +137,26 @@ void drivingActions() {
     return;
   }
 
-
+  // constants
   int defaultSpeed = -100;
   float leftWheelOffset = 0.9;
-
   float turnScale = 0.96;
 
   int rightWheel = defaultSpeed;
   int leftWheel = defaultSpeed * leftWheelOffset;
 
-  // Understand where the line is
-  // black line is bigger number
-  // IR4 is far left and IR1 is far right
+  // Get state - IR4 is far left and IR1 is far right
   int ir1_farright = state->ir1;
   int ir2_right = state->ir2;
   int ir3_left = state->ir3;
   int ir4_farleft = state->ir4;
 
-
-  // turning difference will be the difference between right and left
-  // int turningDifference = ir2_right - ir3_left;
+  // Understand where the line is
+  // black line is bigger number
+  // turning difference will be the difference between right numbers and left numbers
   int turningDifference = (ir1_farright + ir2_right) - (ir3_left + ir4_farleft);
 
-  // modify the wheel speed based on the difference
+  // turn left or right
   if (turningDifference > 0) {
     // reduce right wheel speed
     rightWheel = rightWheel * turnScale;
