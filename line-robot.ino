@@ -172,7 +172,7 @@ void drivingActions() {
   
 
   // drive for a bit
-  delay(300);
+  delay(500);
   
   
   
