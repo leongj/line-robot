@@ -49,6 +49,10 @@ static const long start_millis = millis();
 RobotBoard* board = nullptr;
 MyRobotState* state = nullptr;
 
+int previous_s1 = 0;
+int previous_s2 = 0;
+int previous_s3 = 0;
+int previous_s4 = 0;
 
 /**
  * Example function that will be called when the robot enters the IDLE state
@@ -182,7 +186,7 @@ void drivingActions() {
   }
 
   // constants
-  int defaultSpeed = -100;
+  int defaultSpeed = -150;
   float leftWheelOffset = 0.9;
   float turnScale = 0.96;
 
@@ -211,17 +215,105 @@ void drivingActions() {
     Serial.println(String("<<-- ") + "Wheels: L " + leftWheel + " R " + rightWheel +  "  IR: " + ir4_farleft + " | " + ir3_left + " | " + ir2_right + " | " + ir1_farright + "  diff: " + turningDifference);
   }
   
+  /*
   board->setMotorSpeedL(leftWheel);
   board->setMotorSpeedR(rightWheel);
   
 
   // drive for a bit
   delay(500);
-  
+  */
+  driveOnTrack() ;
   
   
 }
 
+void driveOnTrack() {
+  int wheelSpeedForward = -200;
+  int wheelSpeedSlow = -100;
+  int wheelSpeedStop = 0;
+
+  /*
+  board->setSpeedOnBothMotors(-150);
+  board->setMotorSpeedL(11);
+  board->setMotorSpeedR(11);
+  int motor1Speed =  board->motor1Speed(); //(-255 to 255)
+  int motor2Speed =  board->motor2Speed(); //(-255 to 255)
+  */
+
+
+
+
+   // Read sensor values
+  int current_s1 = state->ir1_raw;
+  int current_s2 = state->ir2_raw;
+  int current_s3 = state->ir3_raw;
+  int current_s4 = state->ir4_raw;
+
+  Serial.println(String("Previous - Sensor values: S1: ") + previous_s1 + " , S2: "+previous_s2 + " , S3: "+previous_s3 + " , S4: "+previous_s4);
+  Serial.println(String("Current -  Sensor values: S1: ") + current_s1 + " , S2: "+current_s2 + " , S3: "+current_s3 + " , S4: "+current_s4);
+
+  // Determine motor speeds based on sensor values
+  //moveForward(wheelSpeedForward);
+/*
+    int s1 = previous_s1 - current_s1;
+    int s2 = previous_s2 - current_s2;
+    int s3 = previous_s3 - current_s3;
+    int s4 = previous_s4 - current_s4;
+*/
+
+    int s1 = current_s1;
+    int s2 = current_s2;
+    int s3 = current_s3;
+    int s4 = current_s4;
+
+  //Define thresolds
+  int threshold = 3700; //TBC - average of a sensor when it is on black track and off-black/white track
+  int thresholdHigh = 3800;
+
+ // moveForward(wheelSpeedForward);
+  
+if (s1 < threshold && s2 < threshold && s3 < threshold && s4 < threshold) {
+    // All sensors detect black, move forward
+    moveForward(wheelSpeedForward);
+  } else if (s1 < threshold || s2 < threshold) {
+    // Left sensors detect black, turn left
+    turnLeft(wheelSpeedForward, wheelSpeedSlow);
+  } else if (s3 < threshold || s4 < threshold) {
+    // Right sensors detect black, turn right
+    turnRight(wheelSpeedForward, wheelSpeedSlow);
+  } else {
+    // No sensors detect black, stop
+    stopMotors(wheelSpeedStop);
+  }
+  
+delay(200);
+
+  previous_s1 = current_s1;
+  previous_s2 = current_s2;
+  previous_s3 = current_s3;
+  previous_s4 = current_s4;
+}
+
+void moveForward(int wheelSpeedForward) {
+    board->setMotorSpeedL(wheelSpeedForward);
+    board->setMotorSpeedR(wheelSpeedForward); 
+}
+
+void turnLeft(int wheelSpeedForward, int wheelSpeedSlow) {
+    board->setMotorSpeedL(wheelSpeedSlow);
+    board->setMotorSpeedR(wheelSpeedForward); 
+}
+
+void turnRight(int wheelSpeedForward, int wheelSpeedSlow) {
+    board->setMotorSpeedL(wheelSpeedForward);
+    board->setMotorSpeedR(wheelSpeedSlow); 
+}
+
+void stopMotors(int wheelSpeedStop) {
+    board->setMotorSpeedL(wheelSpeedStop);
+    board->setMotorSpeedR(wheelSpeedStop); 
+}
 
 /**
  * This is the setup function that will be called once when the board is powered on (or after a reset)
