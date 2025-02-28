@@ -229,7 +229,7 @@ void drivingActions() {
 }
 
 void driveOnTrack() {
-  int wheelSpeedForward = -200;
+  int wheelSpeedForward = -150;
   int wheelSpeedSlow = -100;
   int wheelSpeedStop = 0;
 
@@ -284,10 +284,10 @@ if (s1 < threshold && s2 < threshold && s3 < threshold && s4 < threshold) {
     turnRight(wheelSpeedForward, wheelSpeedSlow);
   } else {
     // No sensors detect black, stop
-    stopMotors(wheelSpeedStop);
+    //stopMotors(wheelSpeedStop);
   }
   
-delay(200);
+//delay(200);
 
   previous_s1 = current_s1;
   previous_s2 = current_s2;
