@@ -30,6 +30,7 @@
 
 #include <Arduino.h>
 #include "src/hub-line-robot-base.h"
+#include <ArduinoHttpClient.h>
 
 
 /**
@@ -48,6 +49,10 @@ class MyRobotState : public RobotState {
 static const long start_millis = millis();
 RobotBoard* board = nullptr;
 MyRobotState* state = nullptr;
+
+// Create these as global variables at the top of your file with other globals
+WiFiClient wifi;
+HttpClient httpClient = HttpClient(wifi, "fn-obs-backend01.azurewebsites.net", 80);  // Replace with your server address and port
 
 
 /**
@@ -285,27 +290,88 @@ void loop() {
   // Step 1: Tick the Board (update sensor data, handle HTTP server connections, etc...)
   board->tick();
 
-  // Step 1.5: Update the LEDs based on the IR sensor values (to provide a nice visual indication of the IR sensor values)
-  if (state->driveState() <= 10 && board->getTickCounter() & 0x01 == 1) {
-    int ir1_state = state->ir1 < state->ir1_soft_threshold;
-    int ir2_state = state->ir2 < state->ir2_soft_threshold;
-    int ir3_state = state->ir3 < state->ir3_soft_threshold;
-    int ir4_state = state->ir4 < state->ir4_soft_threshold;
+  Serial.println("loop start");
+  
+  // Serial.println("Making HTTP request...");
+  // httpClient.get("/api/backendfunction1?name=JV&code=<secret>");
+  
+  // // Get the status code and response
+  // int statusCode = httpClient.responseStatusCode();
+  // String response = httpClient.responseBody();
+  
+  // Serial.print("Status code: ");
+  // Serial.println(statusCode);
+  // Serial.print("Response: ");
+  // Serial.println(response);
 
-    board->setLED(6, ir1_state);
-    board->setLED(3, ir2_state);
-    board->setLED(4, ir3_state);
-    board->setLED(7, ir4_state);
-  }
+  // BUZZ - Replace with new musical sequence
+    // Define note frequencies
+    const int A3 = 220;    // A3
+    const int AS3 = 233;   // A#3
+    const int B3 = 247;    // B3
+    const int CS4 = 277;   // C#4
+    const int DS4 = 311;   // D#4
+    const int E4 = 330;    // E4
+    const int FS3 = 185;   // F#3
+    
+    // Define note durations (in milliseconds)
+    const int QUARTER = 250;
+    const int HALF = 500;
+    const int WHOLE = 1000;
+    const int TRIPLET = 200;  // QUARTER * 2/3
+    
+    // Play the sequence
+    // F#3 (HALF)
+    tone(A4, FS3, HALF);
+    delay(HALF + 50);
+    
+    // E4 (HALF + QUARTER)
+    tone(A4, E4, HALF + QUARTER);
+    delay(HALF + QUARTER + 50);
+    
+    // D#4 (QUARTER)
+    tone(A4, DS4, QUARTER);
+    delay(QUARTER + 50);
+    
+    // Triplet sequence: C#4, B3, A#3
+    tone(A4, CS4, TRIPLET);
+    delay(TRIPLET + 20);
+    tone(A4, B3, TRIPLET);
+    delay(TRIPLET + 20);
+    tone(A4, AS3, TRIPLET);
+    delay(TRIPLET + 20);
+    
+    // A3 (WHOLE)
+    tone(A4, A3, WHOLE);
+    delay(WHOLE + 50);
+    
+    noTone(A4);  
+  delay(3000);
 
-  // Step 2: Perform Action (based on current State)
-  if (state->isIdle()) {                 // IDLE is when the robot is not doing anything
-    idleActions();
-  } else if (state->isPrimed()) {        // PRIMED is when the button is pushed in - if you hold the button in it will remain in primed state until you release the button
-    primedActions();
-  } else if (state->isDriving()) {       // DRIVING, the robot is actively driving, so do whatever needs to be done to continue driving for this tick
-    drivingActions();
-  }
+
+  // // Step 1.5: Update the LEDs based on the IR sensor values (to provide a nice visual indication of the IR sensor values)
+  // if (state->driveState() <= 10 && board->getTickCounter() & 0x01 == 1) {
+  //   int ir1_state = state->ir1 < state->ir1_soft_threshold;
+  //   int ir2_state = state->ir2 < state->ir2_soft_threshold;
+  //   int ir3_state = state->ir3 < state->ir3_soft_threshold;
+  //   int ir4_state = state->ir4 < state->ir4_soft_threshold;
+
+  //   board->setLED(6, ir1_state);
+  //   board->setLED(3, ir2_state);
+  //   board->setLED(4, ir3_state);
+  //   board->setLED(7, ir4_state);
+  // }
+
+  // // Step 2: Perform Action (based on current State)
+  // if (state->isIdle()) {                 // IDLE is when the robot is not doing anything
+  //   idleActions();
+  // } else if (state->isPrimed()) {        // PRIMED is when the button is pushed in - if you hold the button in it will remain in primed state until you release the button
+  //   primedActions();
+  // } else if (state->isDriving()) {       // DRIVING, the robot is actively driving, so do whatever needs to be done to continue driving for this tick
+  //   drivingActions();
+  // }
 
   // Add any additional loop code here...
 }
+
+
