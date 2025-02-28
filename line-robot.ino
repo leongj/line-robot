@@ -93,33 +93,34 @@ void onPrimedBegin() {
   const int HALF = 500;
   const int WHOLE = 1000;
   const int TRIPLET = 200;  // QUARTER * 2/3
-  
-  // Play the sequence
+
+    // Play the sequence
   // F#3 (HALF)
-  tone(A2, FS3, HALF);
+  tone(A4, FS3, HALF);
   delay(HALF + 50);
   
   // E4 (HALF + QUARTER)
-  tone(A2, E4, HALF + QUARTER);
+  tone(A4, E4, HALF + QUARTER);
   delay(HALF + QUARTER + 50);
   
   // D#4 (QUARTER)
-  tone(A2, DS4, QUARTER);
+  tone(A4, DS4, QUARTER);
   delay(QUARTER + 50);
   
   // Triplet sequence: C#4, B3, A#3
-  tone(A2, CS4, TRIPLET);
+  tone(A4, CS4, TRIPLET);
   delay(TRIPLET + 20);
-  tone(A2, B3, TRIPLET);
+  tone(A4, B3, TRIPLET);
   delay(TRIPLET + 20);
-  tone(A2, AS3, TRIPLET);
+  tone(A4, AS3, TRIPLET);
   delay(TRIPLET + 20);
   
   // A3 (WHOLE)
-  tone(A2, A3, WHOLE);
+  tone(A4, A3, WHOLE);
   delay(WHOLE + 50);
   
-  noTone(A2);  
+  noTone(A4);  
+  
 }
 
 /**
